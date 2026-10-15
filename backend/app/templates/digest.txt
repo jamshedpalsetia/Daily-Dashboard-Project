@@ -1,0 +1,82 @@
+DAILY DASHBOARD - {{ date_label }}
+
+WEATHER ({{ location }})
+{% if weather and weather.current %}
+{{ weather.current.temperature | deg(weather.units.temperature) }} {{ weather.current.condition.label }}, feels like {{ weather.current.feels_like | deg(weather.units.temperature) }}, wind {{ weather.current.wind_speed | deg(" " ~ weather.units.wind_speed) }}
+{% for day in weather.forecast[:5] %}
+  {{ day.date }}  {{ day.high | deg }}/{{ day.low | deg }}  {{ day.condition.label }}{% if day.precip_chance %} ({{ day.precip_chance }}% rain){% endif %}
+
+{% endfor %}
+{% else %}
+Unavailable today.
+{% endif %}
+
+NEWS
+{% if news and (news.top or news.business) %}
+{% for section, label in [('top', 'Top headlines'), ('business', 'Business')] %}
+{% if news[section] %}
+{{ label }}:
+{% for item in news[section] %}
+- {{ item.title }} ({{ item.source }})
+  {{ item.link }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% else %}
+No news available today.
+{% endif %}
+
+MARKET MOVERS
+{% if movers %}
+{% for group, label in [('gainers', 'Top gainers'), ('losers', 'Top losers'), ('actives', 'Most active')] %}
+{% if movers[group] %}
+{{ label }}:
+{% for q in movers[group][:5] %}
+  {{ "%-6s" | format(q.symbol) }} {{ q.price | money }}  {{ q.change_percent | pct }}  {{ (q.name or '')[:30] }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% else %}
+Unavailable today.
+{% endif %}
+
+{% if holdings %}
+MY STOCKS
+{% for h in holdings %}
+  {{ "%-6s" | format(h.symbol) }} {{ h.price | money }}  {{ h.change_percent | pct }}{% if h.market_value %}  value {{ h.market_value | money }}{% endif %}
+
+{% endfor %}
+{% if totals and totals.market_value %}
+Portfolio {{ totals.market_value | money }}{% if totals.day_change is not none %} ({{ totals.day_change | signed }} today){% endif %}{% if totals.gain is not none %}, total {{ totals.gain | signed }} ({{ totals.gain_percent | pct }}){% endif %}
+
+{% endif %}
+{% endif %}
+
+TRAVEL DEALS
+{% if deals %}
+{% for deal in deals %}
+- {{ deal.title }}
+  {{ deal.link }}
+{% endfor %}
+{% else %}
+No new deals in the feeds today.
+{% endif %}
+
+TO-DO ({{ open_todos | length }} open{% if overdue %}, {{ overdue | length }} overdue{% endif %})
+{% if open_todos %}
+{% for todo in open_todos %}
+- [{{ todo.priority.value }}] {{ todo.title }}{% if todo.due_date %} (due {{ todo.due_date.strftime('%b %d') }}{% if todo.due_date < today %}, OVERDUE{% endif %}){% endif %}
+
+{% endfor %}
+{% else %}
+Nothing open. Enjoy the day.
+{% endif %}
+{% if recently_done %}
+
+Recently completed:
+{% for todo in recently_done %}
+- {{ todo.title }}
+{% endfor %}
+{% endif %}
+
+{{ dashboard_url }}
