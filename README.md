@@ -2,6 +2,22 @@
 
 A single-user daily dashboard with five widgets and a once-a-day email digest.
 
+> **Built with AI:** Built in two evenings using Claude and Cursor, compared with an estimated three to four weeks without AI assistance. AI accelerated scaffolding, integrations, and debugging; design decisions such as caching, failure handling, and deployment were mine.
+
+## Screenshots
+
+**Dashboard**
+![Daily Dashboard](docs/images/dashboard.png)
+
+**Daily email digest**
+*Top: weather, news, market movers*
+![Daily email digest (part 1)](docs/images/email-digest-1.png)
+
+*Bottom: market movers (continued), my stocks, travel deals, and to-dos*
+![Daily email digest (part 2)](docs/images/email-digest-2.png)
+
+## Widgets
+
 - **Weather** — current conditions and a 5-day forecast (Open-Meteo)
 - **Market movers** — top gainers, losers, and most-active US equities (Yahoo Finance via `yfinance`)
 - **My stocks** — personal watchlist with optional shares/cost basis, stored in Postgres
